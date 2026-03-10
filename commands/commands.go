@@ -2,9 +2,9 @@
 package commands
 
 import (
-	"codeberg.org/dou/goaler/bot"
-	"codeberg.org/dou/goaler/commands/dev"
-	"codeberg.org/dou/goaler/commands/goal"
+	"github.com/dexslender/goaler/bot"
+	"github.com/dexslender/goaler/commands/dev"
+	"github.com/dexslender/goaler/commands/goal"
 	"github.com/charmbracelet/log"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/handler"

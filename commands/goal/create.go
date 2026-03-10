@@ -1,7 +1,7 @@
 package goal
 
 import (
-	"codeberg.org/dou/goaler/util"
+	"github.com/dexslender/goaler/util"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/handler"
 )

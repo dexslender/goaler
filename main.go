@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"codeberg.org/dou/goaler/bot"
-	"codeberg.org/dou/goaler/commands"
-	"codeberg.org/dou/goaler/util"
+	"github.com/dexslender/goaler/bot"
+	"github.com/dexslender/goaler/commands"
+	"github.com/dexslender/goaler/util"
 	"github.com/charmbracelet/log"
 	"github.com/disgoorg/disgo/handler"
 	"github.com/disgoorg/disgo/handler/middleware"

@@ -1,4 +1,4 @@
-module codeberg.org/dou/goaler
+module github.com/dexslender/goaler
 
 go 1.25.4
 

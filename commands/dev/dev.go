@@ -16,5 +16,8 @@ func Handle(r handler.Router) {
 	r.Command("/sql", runSQL)
 	r.Command("/test", runTest)
 
+	r.ButtonComponent("/check/{action}", handleButtons)
+	// r.ButtonComponent("/hello", handleButton)
+
 	r.Modal("/sqlquery", handleModal)
 }

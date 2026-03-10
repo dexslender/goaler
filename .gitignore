@@ -1,4 +1,5 @@
 build/
-.env.sh
+.env
 *.db
 resources/
+.go-cache/

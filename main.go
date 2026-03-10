@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"codeberg.org/dou/goaler/bot"
 	"codeberg.org/dou/goaler/commands"
+	"codeberg.org/dou/goaler/util"
 	"github.com/charmbracelet/log"
 	"github.com/disgoorg/disgo/handler"
 	"github.com/disgoorg/disgo/handler/middleware"
@@ -12,20 +14,22 @@ import (
 	"github.com/kkyr/fig"
 )
 
-func main()  {
+func main() {
+	fmt.Println(os.Getenv("GOALER_TOKEN"))
 	logger := log.NewWithOptions(
-		os.Stderr, 
-		log.Options{ ReportTimestamp: true },
+		os.Stderr,
+		log.Options{ReportTimestamp: true},
 	)
 
 	var config bot.Config
 	if err := fig.Load(&config,
 		fig.UseEnv("GOALER"),
 		fig.File("goaler.yaml"),
-	); 
-	err != nil { logger.Fatal(err) }
+	); err != nil {
+		logger.Fatal(err)
+	}
 
-	// util.SetupDB(logger)
+	util.SetupDB(logger)
 
 	goaler := bot.New(&config, logger)
 	router := handler.New()
@@ -35,9 +39,9 @@ func main()  {
 	goaler.Setup()
 	if goaler.GuildID != 0 {
 		handler.SyncCommands(
-			goaler.Client, 
-			commands.Commands, 
-			[]snowflake.ID{ goaler.GuildID },
+			goaler.Client,
+			commands.Commands,
+			[]snowflake.ID{goaler.GuildID},
 		)
 	}
 

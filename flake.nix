@@ -24,7 +24,8 @@
                 packages = gotools;
                 shellHook = ''
                     export CGO_ENABLED=0
-                    source ./.env.sh
+                    export GOCACHE=$(pwd)/.go-cache
+                    source .env
                 '';
             };
         }

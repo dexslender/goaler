@@ -1,16 +1,9 @@
 package goal
 
 import (
+	"codeberg.org/dou/goaler/util"
 	"github.com/disgoorg/disgo/discord"
 	"github.com/disgoorg/disgo/handler"
-)
-
-type GoalType int
-const (
-	TypeProject GoalType = iota+1 
-	TypeMilestone
-	TypeTODO
-	TypeHabit
 )
 
 var subCreate = discord.ApplicationCommandOptionSubCommand{
@@ -22,10 +15,11 @@ var subCreate = discord.ApplicationCommandOptionSubCommand{
 			Description: "type of goal do you need",
 			Required:    true,
 			Choices: []discord.ApplicationCommandOptionChoiceInt{
-				{Name: "project",    Value: int(TypeProject)},
-				{Name: "milestone",  Value: int(TypeMilestone)},
-				{Name: "to-do list", Value: int(TypeTODO)},
-				{Name: "habit",      Value: int(TypeHabit)},
+				{Name: "project", Value: int(util.TypeProject)},
+				{Name: "milestone", Value: int(util.TypeMilestone)},
+				{Name: "to-do list", Value: int(util.TypeTODO)},
+				{Name: "single quest", Value: int(util.TypeQuest)},
+				{Name: "habit", Value: int(util.TypeHabit)},
 			},
 		},
 		discord.ApplicationCommandOptionString{
@@ -37,6 +31,41 @@ var subCreate = discord.ApplicationCommandOptionSubCommand{
 }
 
 func runCreate(e *handler.CommandEvent) error {
-	// data := e.SlashCommandInteractionData()
-	return nil
+	data := e.SlashCommandInteractionData()
+
+	goalType := util.GoalType(data.Int("type"))
+	goalName := data.String("name")
+
+	switch goalType {
+	case util.TypeProject:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("Project created successfully with name: " + goalName)).
+			Build())
+	case util.TypeMilestone:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("Milestone created successfully with name: " + goalName)).
+			Build())
+	case util.TypeTODO:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("To-do list created successfully with name: " + goalName)).
+			Build())
+	case util.TypeQuest:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("Quest created successfully with name: " + goalName)).
+			Build())
+	case util.TypeHabit:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("Habit created successfully with name: " + goalName)).
+			Build())
+	default:
+		return e.CreateMessage(discord.NewMessageCreateBuilder().
+			SetIsComponentsV2(true).
+			AddComponents(discord.NewTextDisplay("Invalid goal type")).
+			Build())
+	}
 }

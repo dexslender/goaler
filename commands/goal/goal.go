@@ -9,12 +9,12 @@ import (
 var Goal = discord.SlashCommandCreate{
 	Name: "goal",
 	Description: "manage your goals",
-	Options: []discord.ApplicationCommandOption{subCreate, subList, subTest},
+	Options: []discord.ApplicationCommandOption{subCreate, subList},
 }
 
 func Handle(r handler.Router) {
 	r.Command("/create", runCreate)
-	r.Command("/test", runTest)
+	// r.Command("/test", runTest)
 
-	r.ButtonComponent("/test/{button}", handleButtons)
+	// r.ButtonComponent("/test/{button}", handleButtons)
 }

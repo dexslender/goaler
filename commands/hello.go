@@ -6,12 +6,12 @@ import (
 )
 
 var hello = discord.SlashCommandCreate{
-	Name: "hello",
+	Name:        "hello",
 	Description: "just sends a hello message!",
 }
 
 func runHello(e *handler.CommandEvent) error {
-	return e.CreateMessage(discord.NewMessageCreateBuilder().
-		SetContentf("Hello %s", e.User().Mention()).
-		Build())
+	return e.CreateMessage(discord.NewMessageCreateV2(
+		discord.NewTextDisplayf("Hello %s", e.User().Mention()),
+	))
 }

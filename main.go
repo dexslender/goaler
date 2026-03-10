@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"codeberg.org/dou/goaler/bot"
@@ -15,7 +14,6 @@ import (
 )
 
 func main() {
-	fmt.Println(os.Getenv("GOALER_TOKEN"))
 	logger := log.NewWithOptions(
 		os.Stderr,
 		log.Options{ReportTimestamp: true},

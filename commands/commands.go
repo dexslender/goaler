@@ -32,12 +32,8 @@ func Setup(o *bot.Goaler, r handler.Router) {
 func NotFound(l *log.Logger) func(*handler.InteractionEvent) error {
 	return func(ie *handler.InteractionEvent) error {
 		l.Error("command not found")
-		return ie.CreateMessage(discord.NewMessageCreateBuilder().
-			AddComponents(discord.NewContainer(
-				discord.NewTextDisplay("# Not found\n-# maybe is still in development"),
-			)).
-			SetIsComponentsV2(true).
-			SetEphemeral(true).
-			Build())
+		return ie.CreateMessage(discord.NewMessageCreateV2(discord.NewContainer(
+			discord.NewTextDisplay("# Not found\n-# maybe is still in development"),
+		)).WithEphemeral(true))
 	}
 }

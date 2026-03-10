@@ -11,24 +11,22 @@ var test = discord.ApplicationCommandOptionSubCommand{
 	Description: "run a random test",
 }
 
-var addTask = discord.NewModalCreateBuilder().
-	SetTitle("add new task...").
-	SetCustomID("/dev/add-task").
-	AddComponents(
+var addTask = discord.NewModalCreate(
+	"/dev/add-task",
+	"add new task...",
+	[]discord.LayoutComponent{
 		discord.NewLabel("name",
 			discord.NewShortTextInput("/dev/add-task/name").
 				WithPlaceholder("do something").
 				WithRequired(true)).WithDescription("provide a short name for your task"),
 		discord.NewLabel("description",
 			discord.NewParagraphTextInput("/dev/add-task/description").
-				WithPlaceholder("this task consists of..."))).
-	Build()
+				WithPlaceholder("this task consists of...")),
+	})
 
 func _runTest(e *handler.CommandEvent) error {
-	return e.CreateMessage(discord.NewMessageCreateBuilder().
-		SetIsComponentsV2(true).
-		AddComponents(discord.NewActionRow(discord.NewSuccessButton("hello", "/dev/hello"))).
-		Build())
+	return e.CreateMessage(discord.NewMessageCreateV2().
+		AddComponents(discord.NewActionRow(discord.NewSuccessButton("hello", "/dev/hello"))))
 }
 
 func _handleButton(data discord.ButtonInteractionData, e *handler.ComponentEvent) error {
@@ -38,14 +36,11 @@ func _handleButton(data discord.ButtonInteractionData, e *handler.ComponentEvent
 	targetButt.Disabled = true
 	targetComp.UpdateComponent(targetButt.ID, targetButt)
 
-	return e.UpdateMessage(discord.NewMessageUpdateBuilder().
-		SetComponents(targetComp).
-		Build())
+	return e.UpdateMessage(discord.NewMessageUpdateV2([]discord.LayoutComponent{targetComp}))
 }
 
 func runTest(e *handler.CommandEvent) error {
-	return e.CreateMessage(discord.NewMessageCreateBuilder().
-		SetIsComponentsV2(true).
+	return e.CreateMessage(discord.NewMessageCreateV2().
 		AddComponents(discord.NewContainer(
 			discord.NewSection(
 				discord.NewTextDisplay("### task 1"),
@@ -60,8 +55,7 @@ func runTest(e *handler.CommandEvent) error {
 			discord.NewActionRow(
 				discord.NewSecondaryButton("", "/dev/check/add").
 					WithEmoji(util.Plus)),
-		)).
-		Build())
+		)))
 }
 
 func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent) error {
@@ -72,14 +66,15 @@ func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent
 	default:
 		container, ok := e.Message.Components[0].(discord.ContainerComponent)
 		if !ok {
-			return e.UpdateMessage(discord.NewMessageUpdateBuilder().
-				SetComponents(discord.NewTextDisplay("Unknown error")).
-				Build())
+			return e.UpdateMessage(discord.NewMessageUpdateV2(
+				[]discord.LayoutComponent{
+					discord.NewTextDisplay("Unknown error"),
+				},
+			))
 		}
 		for k, v := range container.Components {
 			if s, ok := v.(discord.SectionComponent); ok {
-				if b, ok := s.Accessory.(discord.ButtonComponent); 
-				ok && b.CustomID == data.CustomID() {
+				if b, ok := s.Accessory.(discord.ButtonComponent); ok && b.CustomID == data.CustomID() {
 					if b.Style == discord.ButtonStyleSecondary {
 						b.Emoji = &util.Check
 						b.Style = discord.ButtonStyleSuccess
@@ -95,8 +90,6 @@ func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent
 			}
 		}
 
-		return e.UpdateMessage(discord.NewMessageUpdateBuilder().
-			SetComponents(container).
-			Build())
+		return e.UpdateMessage(discord.NewMessageUpdateV2([]discord.LayoutComponent{container}))
 	}
 }

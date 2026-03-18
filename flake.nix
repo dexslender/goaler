@@ -11,13 +11,14 @@
         utils.lib.eachDefaultSystem (
             system:
         let
-            # pkgs = nixpkgs.legacyPackages.${system};
-            pkgs = import nixpkgs { inherit system; };
+            pkgs = nixpkgs.legacyPackages.${system};
+            # pkgs = import nixpkgs { inherit system; };
             gotools = with pkgs; [
                 go
                 gopls
                 go-tools
                 delve
+                just
             ];
         in {
             devShell = pkgs.mkShell {

@@ -14,10 +14,10 @@ func runSQL(e *handler.CommandEvent) error {
 	return e.Modal(discord.NewModalCreate(
 		"/dev/sqlquery",
 		"do a sql query...",
-		[]discord.LayoutComponent{discord.NewLabel("query",
+		discord.NewLabel("query",
 			discord.NewParagraphTextInput("query").
 				WithPlaceholder("No WHERE, everywhere!"),
-		)},
+		),
 	))
 }
 

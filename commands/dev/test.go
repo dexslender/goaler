@@ -14,15 +14,14 @@ var test = discord.ApplicationCommandOptionSubCommand{
 var addTask = discord.NewModalCreate(
 	"/dev/add-task",
 	"add new task...",
-	[]discord.LayoutComponent{
-		discord.NewLabel("name",
-			discord.NewShortTextInput("/dev/add-task/name").
-				WithPlaceholder("do something").
-				WithRequired(true)).WithDescription("provide a short name for your task"),
-		discord.NewLabel("description",
-			discord.NewParagraphTextInput("/dev/add-task/description").
-				WithPlaceholder("this task consists of...")),
-	})
+	discord.NewLabel("name",
+		discord.NewShortTextInput("/dev/add-task/name").
+			WithPlaceholder("do something").
+			WithRequired(true)).WithDescription("provide a short name for your task"),
+	discord.NewLabel("description",
+		discord.NewParagraphTextInput("/dev/add-task/description").
+			WithPlaceholder("this task consists of...")),
+)
 
 func _runTest(e *handler.CommandEvent) error {
 	return e.CreateMessage(discord.NewMessageCreateV2().
@@ -36,7 +35,7 @@ func _handleButton(data discord.ButtonInteractionData, e *handler.ComponentEvent
 	targetButt.Disabled = true
 	targetComp.UpdateComponent(targetButt.ID, targetButt)
 
-	return e.UpdateMessage(discord.NewMessageUpdateV2([]discord.LayoutComponent{targetComp}))
+	return e.UpdateMessage(discord.NewMessageUpdateV2(targetComp))
 }
 
 func runTest(e *handler.CommandEvent) error {
@@ -67,18 +66,18 @@ func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent
 		container, ok := e.Message.Components[0].(discord.ContainerComponent)
 		if !ok {
 			return e.UpdateMessage(discord.NewMessageUpdateV2(
-				[]discord.LayoutComponent{
-					discord.NewTextDisplay("Unknown error"),
-				},
+
+				discord.NewTextDisplay("Unknown error"),
 			))
 		}
 		for k, v := range container.Components {
 			if s, ok := v.(discord.SectionComponent); ok {
 				if b, ok := s.Accessory.(discord.ButtonComponent); ok && b.CustomID == data.CustomID() {
-					if b.Style == discord.ButtonStyleSecondary {
+					switch b.Style {
+					case discord.ButtonStyleSecondary:
 						b.Emoji = &util.Check
 						b.Style = discord.ButtonStyleSuccess
-					} else if b.Style == discord.ButtonStyleSuccess {
+					case discord.ButtonStyleSuccess:
 						b.Emoji = &util.Uncheck
 						b.Style = discord.ButtonStyleSecondary
 					}
@@ -90,6 +89,6 @@ func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent
 			}
 		}
 
-		return e.UpdateMessage(discord.NewMessageUpdateV2([]discord.LayoutComponent{container}))
+		return e.UpdateMessage(discord.NewMessageUpdateV2(container))
 	}
 }

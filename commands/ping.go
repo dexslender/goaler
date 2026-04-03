@@ -20,9 +20,7 @@ func runPing(e *handler.CommandEvent) error {
 	gate := e.Client().Gateway.Latency().Round(time.Millisecond)
 
 	_, err = e.UpdateInteractionResponse(discord.NewMessageUpdateV2(
-		[]discord.LayoutComponent{
-			buildContainer(rest, gate),
-		},
+		buildContainer(rest, gate),
 	))
 	return err
 }
@@ -30,15 +28,12 @@ func runPing(e *handler.CommandEvent) error {
 func runPingRefresh(data discord.ButtonInteractionData, e *handler.ComponentEvent) error {
 	a := time.Now()
 	err := e.DeferUpdateMessage()
-	if err != nil {
-		return err
-	}
+	if err != nil { return err }
 	rest := time.Since(a).Round(time.Millisecond)
 	gate := e.Client().Gateway.Latency().Round(time.Millisecond)
 	_, err = e.UpdateInteractionResponse(discord.NewMessageUpdateV2(
-		[]discord.LayoutComponent{
-			buildContainer(rest, gate),
-		},
+
+		buildContainer(rest, gate),
 	))
 	return err
 }

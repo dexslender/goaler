@@ -6,18 +6,20 @@ import (
 	"github.com/disgoorg/disgo/handler"
 )
 
+// Test command
 var test = discord.ApplicationCommandOptionSubCommand{
 	Name:        "test",
 	Description: "run a random test",
 }
 
+// Add Task Modal
 var addTask = discord.NewModalCreate(
 	"/dev/add-task",
 	"add new task...",
 	discord.NewLabel("name",
 		discord.NewShortTextInput("/dev/add-task/name").
 			WithPlaceholder("do something").
-			WithRequired(true)).WithDescription("provide a short name for your task"),
+			WithRequired(true)),
 	discord.NewLabel("description",
 		discord.NewParagraphTextInput("/dev/add-task/description").
 			WithPlaceholder("this task consists of...")),
@@ -65,30 +67,33 @@ func handleButtons(data discord.ButtonInteractionData, e *handler.ComponentEvent
 	default:
 		container, ok := e.Message.Components[0].(discord.ContainerComponent)
 		if !ok {
-			return e.UpdateMessage(discord.NewMessageUpdateV2(
-
-				discord.NewTextDisplay("Unknown error"),
-			))
+			return e.UpdateMessage(
+				discord.NewMessageUpdateV2(discord.NewTextDisplay("Unknown error")),
+			)
 		}
-		for k, v := range container.Components {
-			if s, ok := v.(discord.SectionComponent); ok {
-				if b, ok := s.Accessory.(discord.ButtonComponent); ok && b.CustomID == data.CustomID() {
-					switch b.Style {
-					case discord.ButtonStyleSecondary:
-						b.Emoji = &util.Check
-						b.Style = discord.ButtonStyleSuccess
-					case discord.ButtonStyleSuccess:
-						b.Emoji = &util.Uncheck
-						b.Style = discord.ButtonStyleSecondary
-					}
-					// b.Disabled = true
-					s.Accessory = b
-					container.Components[k] = s
-					break
-				}
+		for i, component := range container.Components {
+			section, ok := component.(discord.SectionComponent)
+			if !ok {
+				continue
 			}
-		}
+			button, ok := section.Accessory.(discord.ButtonComponent)
+			if !ok || button.CustomID != data.CustomID() {
+				continue
+			}
 
+			switch button.Style {
+			case discord.ButtonStyleSecondary:
+				button.Emoji = &util.Check
+				button.Style = discord.ButtonStyleSuccess
+			case discord.ButtonStyleSuccess:
+				button.Emoji = &util.Uncheck
+				button.Style = discord.ButtonStyleSecondary
+			}
+			// b.Disabled = true
+			section.Accessory = button
+			container.Components[i] = section
+			break
+		}
 		return e.UpdateMessage(discord.NewMessageUpdateV2(container))
 	}
 }

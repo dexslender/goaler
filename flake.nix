@@ -19,14 +19,13 @@
                 go-tools
                 delve
                 just
+                yaml-language-server
             ];
         in {
             devShell = pkgs.mkShell {
                 packages = gotools;
                 shellHook = ''
                     export CGO_ENABLED=0
-                    export GOCACHE=$(pwd)/.go-cache
-                    source .env
                 '';
             };
         }
